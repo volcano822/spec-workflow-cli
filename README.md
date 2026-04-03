@@ -5,6 +5,7 @@ A command-line interface for structured spec-driven development.
 ## ✨ Key Features
 
 - **Structured Development Workflow** - Sequential spec creation (Requirements → Design → Tasks)
+- **Complete Workflow Guide** - Comprehensive guide to spec-driven development
 - **Task Management** - Create, list, and execute tasks
 - **Task Progress Tracking** - Visual progress bars and detailed status
 - **Implementation Logs** - Searchable logs of all task implementations
@@ -15,16 +16,23 @@ A command-line interface for structured spec-driven development.
 ### Step 1: Install globally
 
 ```bash
-npm install -g @pimzino/spec-workflow-cli
+npm install -g @volcano822/spec-workflow-cli
 ```
 
 Or use with npx:
 
 ```bash
-npx @pimzino/spec-workflow-cli --help
+npx @volcano822/spec-workflow-cli --help
 ```
 
-### Step 2: Initialize your project
+### Step 2: Check out the workflow guide
+
+```bash
+# Show complete spec-driven development workflow guide
+spec-workflow guide
+```
+
+### Step 3: Initialize your project
 
 ```bash
 cd /path/to/your/project
@@ -35,6 +43,8 @@ spec-workflow create requirements my-first-spec
 
 | Command                                       | Description                                                     |
 | --------------------------------------------- | --------------------------------------------------------------- |
+| `help`                                        | Show this help message                                          |
+| `guide`                                       | Show complete spec-driven development workflow guide            |
 | `create <type> <name>`                        | Create specification document (requirements \| design \| tasks) |
 | `create task <spec-id> <title> [description]` | Create new task in specification                                |
 | `list [--status <status>]`                    | List all specifications                                         |
@@ -49,6 +59,12 @@ spec-workflow create requirements my-first-spec
 ## 💡 Usage Examples
 
 ```bash
+# Show help information
+spec-workflow help
+
+# Show complete workflow guide
+spec-workflow guide
+
 # Create a requirements document
 spec-workflow create requirements user-authentication
 
@@ -115,6 +131,11 @@ npm install
 # Build the project
 npm run build
 
+# 全局链接
+npm link
+
+# 测试
+spec-workflow --version
 # Test the CLI locally
 npx tsx src/index.ts --help
 ```

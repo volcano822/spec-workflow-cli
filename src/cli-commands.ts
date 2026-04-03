@@ -313,4 +313,219 @@ export class SpecWorkflowCLI {
     }
     console.log(`File: ${tasksPath}\n`);
   }
+
+  async showGuide(): Promise<void> {
+    const currentYear = new Date().getFullYear();
+    const guide = `# Spec Development Workflow
+
+## Overview
+
+You guide users through spec-driven development using CLI tools. Transform rough ideas into detailed specifications through Requirements → Design → Tasks → Implementation phases.
+Feature names use kebab-case (e.g., user-authentication). Create ONE spec at a time.
+
+## Workflow Diagram
+\`\`\`mermaid
+flowchart TD
+    Start([Start: User requests feature]) --> CheckSteering{Steering docs exist?}
+    CheckSteering -->|Yes| P1_Load[Read steering docs:<br/>.spec-workflow/steering/*.md]
+    CheckSteering -->|No| P1_Template
+
+    %% Phase 1: Requirements
+    P1_Load --> P1_Template[Check user-templates first,<br/>then read template:<br/>requirements-template.md]
+    P1_Template --> P1_Research[Research if needed]
+    P1_Research --> P1_Create[Create file:<br/>.spec-workflow/specs/{name}/<br/>requirements.md]
+    P1_Create --> P1_Status[Create spec: spec-workflow create requirements {name}]
+
+    %% Phase 2: Design
+    P1_Status --> P2_Template[Check user-templates first,<br/>then read template:<br/>design-template.md]
+    P2_Template --> P2_Analyze[Analyze codebase patterns]
+    P2_Analyze --> P2_Create[Create file:<br/>.spec-workflow/specs/{name}/<br/>design.md]
+    P2_Create --> P2_Status[Create spec: spec-workflow create design {name}]
+
+    %% Phase 3: Tasks
+    P2_Status --> P3_Template[Check user-templates first,<br/>then read template:<br/>tasks-template.md]
+    P3_Template --> P3_Break[Convert design to tasks]
+    P3_Break --> P3_Create[Create file:<br/>.spec-workflow/specs/{name}/<br/>tasks.md]
+    P3_Create --> P3_Status[Create spec: spec-workflow create tasks {name}]
+
+    %% Phase 4: Implementation
+    P3_Status --> P4_Ready[Spec complete.<br/>Ready to implement?]
+    P4_Ready -->|Yes| P4_Status[Check status: spec-workflow status {name}]
+    P4_Status --> P4_Code[Implement code]
+    P4_Code --> P4_Complete[Check progress: spec-workflow list]
+    P4_Complete --> P4_More{More tasks?}
+    P4_More -->|Yes| P4_Code
+    P4_More -->|No| End([Implementation Complete])
+
+    style Start fill:#e1f5e1
+    style End fill:#e1f5e1
+    style CheckSteering fill:#fff4e6
+    style P4_More fill:#fff4e6
+\`\`\`
+
+## Spec Workflow
+
+### Phase 1: Requirements
+**Purpose**: Define what to build based on user needs.
+
+**File Operations**:
+- Read steering docs: \`.spec-workflow/steering/*.md\` (if they exist)
+- Check for custom template: \`.spec-workflow/user-templates/requirements-template.md\`
+- Read template: \`.spec-workflow/templates/requirements-template.md\` (if no custom template)
+- Create document: \`.spec-workflow/specs/{spec-name}/requirements.md\`
+
+**CLI Commands**:
+- \`spec-workflow create requirements <spec-name>\`: Create requirements document
+
+**Process**:
+1. Check if \`.spec-workflow/steering/\` exists (if yes, read product.md, tech.md, structure.md)
+2. Check for custom template at \`.spec-workflow/user-templates/requirements-template.md\`
+3. If no custom template, use the default template
+4. Research market/user expectations if needed (current year: ${currentYear})
+5. Generate requirements as user stories
+6. Create \`requirements.md\` using the CLI command above
+7. Once requirements are done, move to Design phase
+
+### Phase 2: Design
+**Purpose**: Create technical design addressing all requirements.
+
+**File Operations**:
+- Check for custom template: \`.spec-workflow/user-templates/design-template.md\`
+- Read template: \`.spec-workflow/templates/design-template.md\` (if no custom template)
+- Create document: \`.spec-workflow/specs/{spec-name}/design.md\`
+
+**CLI Commands**:
+- \`spec-workflow create design <spec-name>\`: Create design document
+
+**Process**:
+1. Check for custom template at \`.spec-workflow/user-templates/design-template.md\`
+2. If no custom template, use the default template
+3. Analyze codebase for patterns to reuse
+4. Research technology choices if needed (current year: ${currentYear})
+5. Generate design with all template sections
+6. Create \`design.md\` using the CLI command above
+7. Once design is done, move to Tasks phase
+
+### Phase 3: Tasks
+**Purpose**: Break design into atomic implementation tasks.
+
+**File Operations**:
+- Check for custom template: \`.spec-workflow/user-templates/tasks-template.md\`
+- Read template: \`.spec-workflow/templates/tasks-template.md\` (if no custom template)
+- Create document: \`.spec-workflow/specs/{spec-name}/tasks.md\`
+
+**CLI Commands**:
+- \`spec-workflow create tasks <spec-name>\`: Create tasks document
+- \`spec-workflow create task <spec-id> <title> [description]\`: Create new task
+
+**Process**:
+1. Check for custom template at \`.spec-workflow/user-templates/tasks-template.md\`
+2. If no custom template, use the default template
+3. Convert design into atomic tasks (1-3 files each)
+4. Include file paths and requirement references
+5. Create \`tasks.md\` using the CLI command above
+6. After tasks are created, you're ready for implementation
+
+### Phase 4: Implementation
+**Purpose**: Execute tasks systematically.
+
+**File Operations**:
+- Read specs: \`.spec-workflow/specs/{spec-name}/*.md\` (if returning to work)
+- Edit tasks.md to update status:
+  - \`- [ ]\` = Pending task
+  - \`- [-]\` = In-progress task
+  - \`- [x]\` = Completed task
+
+**CLI Commands**:
+- \`spec-workflow list [--status <status>]\`: List all specifications
+- \`spec-workflow status <spec-id>\`: Show specification progress details
+- \`spec-workflow archive <spec-id>\`: Archive completed specification
+
+**Process**:
+1. Check current status with \`spec-workflow status <spec-id>\`
+2. Read \`tasks.md\` to see all tasks
+3. For each task:
+   - Edit tasks.md: Change \`[ ]\` to \`[-]\` for the task you're starting
+   - Implement the code according to the task description
+   - Test your implementation
+   - Edit tasks.md: Change \`[-]\` to \`[x]\`
+4. Continue until all tasks show \`[x]\`
+5. When done, archive with \`spec-workflow archive <spec-id>\`
+
+## Workflow Rules
+
+- Create documents directly at specified file paths
+- Read templates from \`.spec-workflow/templates/\` directory
+- Follow exact template structures
+- Complete phases in sequence (no skipping)
+- One spec at a time
+- Use kebab-case for spec names
+- Steering docs are optional - only create when explicitly requested
+
+## File Structure
+\`\`\`
+.spec-workflow/
+├── templates/           # Auto-populated on init
+│   ├── requirements-template.md
+│   ├── design-template.md
+│   └── tasks-template.md
+├── specs/
+│   └── {spec-name}/
+│       ├── requirements.md
+│       ├── design.md
+│       └── tasks.md
+├── archive/             # Archived specs
+└── steering/
+    ├── product.md
+    ├── tech.md
+    └── structure.md
+\`\`\`
+
+## Quick Start
+
+1. Initialize workspace (first time only):
+   \`\`\`
+   spec-workflow create requirements my-first-feature
+   \`\`\`
+   (This will automatically initialize the workspace)
+
+2. Create requirements document:
+   \`\`\`
+   spec-workflow create requirements my-feature
+   \`\`\`
+
+3. Create design document:
+   \`\`\`
+   spec-workflow create design my-feature
+   \`\`\`
+
+4. Create tasks document:
+   \`\`\`
+   spec-workflow create tasks my-feature
+   \`\`\`
+
+5. List all specs:
+   \`\`\`
+   spec-workflow list
+   \`\`\`
+
+6. Check spec status:
+   \`\`\`
+   spec-workflow status my-feature
+   \`\`\`
+
+7. Add a new task:
+   \`\`\`
+   spec-workflow create task my-feature "Implement login form"
+   \`\`\`
+
+8. Archive completed spec:
+   \`\`\`
+   spec-workflow archive my-feature
+   \`\`\`
+
+For more help, run: \`spec-workflow --help\`
+`;
+    console.log(guide);
+  }
 }

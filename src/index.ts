@@ -15,6 +15,8 @@ USAGE:
   spec-workflow [command] [arguments] [options]
 
 COMMANDS:
+  help                        Show this help message
+  guide                       Show complete spec-driven development workflow guide
   create <type> <name>       Create specification document
                               <type>: requirements | design | tasks
                               <name>: Spec name in kebab-case
@@ -92,7 +94,7 @@ EXAMPLES:
   # Archive a spec
   spec-workflow archive user-authentication
 
-For more information, visit: https://github.com/feisir/spec-workflow-mcp
+For more information, visit: https://github.com/volcano822/spec-workflow-cli
 `);
 }
 
@@ -345,7 +347,15 @@ async function main() {
         await cli.archiveSpec(subCommands[0]);
         break;
 
+      case 'guide':
+        await cli.showGuide();
+        break;
+
       case 'help':
+        showHelp();
+        process.exit(0);
+        break;
+
       default:
         showHelp();
         process.exit(1);
